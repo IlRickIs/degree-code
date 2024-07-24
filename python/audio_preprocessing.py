@@ -30,6 +30,8 @@ def preprocess_audio_files(file_list: list, target_sr: int) -> list:
 
 def get_dataset_files(dataset_path: str) -> list:
     actors = os.listdir(dataset_path)
+    #exclude non directories
+    actors = [a for a in actors if os.path.isdir(dataset_path + a)]
     files = []
     for actor in actors:
         actor_path = dataset_path + actor + '/'
