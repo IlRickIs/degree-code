@@ -28,13 +28,17 @@ if __name__ == '__main__':
             features = extract_features(processed_signals, c.TARGET_SR)
             print(features.shape)
             features = features.copy()
+            #TODO: parse filenames and add to features
             features.to_csv(features_dir + dataset_name + '.csv', index=False)
             print(f'Features for {dataset_name} extracted\n')
         else:
             print(f'Features for {dataset_name} already extracted\n')
         
-        print("now starting the classification task")
+        files = get_dataset_files(dataset_path)
+        print(files)
+
         # Classification task
+        print("now starting the classification task")
         features = pd.read_csv(features_dir + dataset_name + '.csv')
-        
+
         

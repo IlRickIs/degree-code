@@ -59,3 +59,15 @@ def extract_features(signals: list, fs: int) -> list:
     features_df = pd.concat([features_df, mfccs], axis=1)
     eng.quit()
     return features_df
+
+def parse_filenames(files: list, dataset: int) -> pd.DataFrame: #TODO: implement
+    """Parse the filenames of the audio files
+    dataset: 0 for EMOVO, 1 for RAVDESS"""
+    df = pd.DataFrame(columns=['actor', 'emotion'])
+
+    if dataset == 0:
+        for file in files:
+            filename = os.path.basename(file)
+            actor = filename.split('-')[1]
+            emotion = filename.split('')[2]
+            df = df.append({'actor': actor, 'emotion': emotion}, ignore_index=True)
