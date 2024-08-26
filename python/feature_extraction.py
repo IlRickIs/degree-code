@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.signal.windows import hamming
 import librosa
 
-def extract_mfccs(signals: list, fs: int) -> list:
+def extract_mfccs(signals: list, fs: int) -> pd.DataFrame:
     """Extract MFCCs from a list of audio signals"""
     n_mfcc = 13
     windowDuration = 0.025
@@ -16,7 +16,7 @@ def extract_mfccs(signals: list, fs: int) -> list:
 
     def get_column_names(n_mfcc):
         column_names = []
-        for i in range(1, 14):
+        for i in range(1, n_mfcc+1):
             column_names.append(f'mean{i}')
             column_names.append(f'median{i}')
             column_names.append(f'std{i}')
@@ -44,9 +44,6 @@ def extract_mfccs(signals: list, fs: int) -> list:
     for i,signal in enumerate(signals):
         signal_features = get_mfcc_features(signal)
         features_df.loc[i] = signal_features
-    
-    print(features_df)
-        
     return features_df
 
 
@@ -55,9 +52,10 @@ def extract_features(signals: list, fs: int) -> list:
     eng = matlab.engine.start_matlab()
     eng.cd(r'matlab', nargout=0)
     features = eng.extract_features(signals, fs)
-    #mfccs = extract_mfccs(signals, fs)
+    mfccs = extract_mfccs(signals, fs)
     #write features to file
     features_df = pd.DataFrame(columns=['pitch', 'energy', 'zcr', 'spectralKurtosis', 'spectralSkewness'], 
                                 data=features)
+    features_df = pd.concat([features_df, mfccs], axis=1)
     eng.quit()
     return features_df

@@ -20,21 +20,15 @@ if __name__ == '__main__':
             processed_signals = preprocess_audio_files(files, c.TARGET_SR)
 
             print(f'Processed {len(processed_signals)}')
-            test = []
-            test.append(processed_signals[0])
-            print('first signal: ' + str(test))
+            
             
             print("now starting to extract features")
 
             # Extract features
-            # features = extract_features(processed_signals, c.TARGET_SR)
-            # print(type(features))
-            # print(features.shape)
-            # features = features.copy()
-            # features.to_csv(features_dir + dataset_path.split('/')[-2] + '.csv', index=False)
-
-            # Extract MFCCs
-            mfccs = extract_mfccs(test, c.TARGET_SR)
-            print('Done!')
+            features = extract_features(processed_signals, c.TARGET_SR)
+            print(features.shape)
+            features = features.copy()
+            features.to_csv(features_dir + dataset_path.split('/')[-2] + '.csv', index=False)
         else:
             print(f'Features for {dataset_name} already extracted')
+        
