@@ -12,7 +12,7 @@ if __name__ == '__main__':
     
     for dataset_path in dataset_paths:
         os.makedirs(features_dir, exist_ok=True)
-        print(f'----------WORKING WITH {dataset_path}----------')
+        print(f'----------WORKING WITH {dataset_path}----------\n')
         dataset_name = dataset_path.split('/')[-2]
 
         if not os.path.exists(features_dir + dataset_name + '.csv'):
@@ -28,7 +28,13 @@ if __name__ == '__main__':
             features = extract_features(processed_signals, c.TARGET_SR)
             print(features.shape)
             features = features.copy()
-            features.to_csv(features_dir + dataset_path.split('/')[-2] + '.csv', index=False)
+            features.to_csv(features_dir + dataset_name + '.csv', index=False)
+            print(f'Features for {dataset_name} extracted\n')
         else:
-            print(f'Features for {dataset_name} already extracted')
+            print(f'Features for {dataset_name} already extracted\n')
+        
+        print("now starting the classification task")
+        # Classification task
+        features = pd.read_csv(features_dir + dataset_name + '.csv')
+        
         
