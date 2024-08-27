@@ -50,7 +50,7 @@ def extract_mfccs(signals: list, fs: int) -> pd.DataFrame:
 def extract_features(signals: list, fs: int) -> list:
     """Extract features from a list of audio signals, this function writes the features to a file"""
     eng = matlab.engine.start_matlab()
-    eng.cd(r'..\\matlab', nargout=0)
+    eng.cd(r'matlab', nargout=0)
     features = eng.extract_features(signals, fs)
     mfccs = extract_mfccs(signals, fs)
     #write features to file

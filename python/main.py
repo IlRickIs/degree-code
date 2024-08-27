@@ -28,6 +28,15 @@ def produce_features_dataframes(dataset_paths, features_dir):
             print(features.shape)
             features = features.copy()
             #TODO: parse filenames and add to features
+            parsed_df = features_m.parse_filenames(files, dataset_paths.index(dataset_path))
+            features = pd.concat([parsed_df, features], axis=1)
+
+            col = features.pop('actor')
+            features.insert(0, 'actor', col)
+
+            col = features.pop('emotion')
+            features.insert(len(features.columns), 'emotion', col)
+
             features.to_csv(features_dir + dataset_name + '.csv', index=False)
             print(f'Features for {dataset_name} extracted\n')
         else:
@@ -36,17 +45,5 @@ def produce_features_dataframes(dataset_paths, features_dir):
 if __name__ == '__main__':
     # Produce features dataframes
     produce_features_dataframes(c.DATASETS_PATHS, c.FEATURES_PATH)
-    
-    files = preprocess.get_dataset_files(c.DATASETS_PATHS[0])
-    parsed_df = features_m.parse_filenames(files, 0)
-    print(parsed_df)
-    print('\n')
-    
-    files = preprocess.get_dataset_files(c.DATASETS_PATHS[1])
-    parsed_df = features_m.parse_filenames(files, 1)
-    print(parsed_df)
-    # files = preprocess.get_dataset_files(c.DATASETS_PATHS[0])
-    # print(files)
-
 
         
