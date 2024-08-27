@@ -50,7 +50,7 @@ def extract_mfccs(signals: list, fs: int) -> pd.DataFrame:
 def extract_features(signals: list, fs: int) -> list:
     """Extract features from a list of audio signals, this function writes the features to a file"""
     eng = matlab.engine.start_matlab()
-    eng.cd(r'matlab', nargout=0)
+    eng.cd(r'..\\matlab', nargout=0)
     features = eng.extract_features(signals, fs)
     mfccs = extract_mfccs(signals, fs)
     #write features to file
@@ -60,7 +60,7 @@ def extract_features(signals: list, fs: int) -> list:
     eng.quit()
     return features_df
 
-def parse_filenames(files: list, dataset: int) -> pd.DataFrame: #TODO: implement
+def parse_filenames(files: list, dataset: int) -> pd.DataFrame: 
     """Parse the filenames of the audio files
     dataset: 0 for EMOVO, 1 for RAVDESS"""
     df = pd.DataFrame(columns=['actor', 'emotion'])
@@ -69,5 +69,25 @@ def parse_filenames(files: list, dataset: int) -> pd.DataFrame: #TODO: implement
         for file in files:
             filename = os.path.basename(file)
             actor = filename.split('-')[1]
-            emotion = filename.split('')[2]
-            df = df.append({'actor': actor, 'emotion': emotion}, ignore_index=True)
+            #create a dictionary to map the emotions to the corresponding number
+            emotions = {'neu': 1, 'gio': 3, 'tri': 4, 'rab': 5, 'pau': 6, 'dis': 7, 'sor': 8}
+            emotion = emotions[filename.split('-')[0]]
+            df = df._append({'actor': actor, 'emotion': emotion}, ignore_index=True)
+        return df
+    
+    elif dataset == 1:
+        for file in files:
+            filename = os.path.basename(file)
+            filename = filename[:-4]
+            actor_mapping = {}
+            for i in range(1, 25):
+                if i % 2 == 0:
+                    actor_mapping[i] = f'f{i//2}'
+                else:
+                    actor_mapping[i] = f'm{(i+1)//2}'
+            actor = actor_mapping[int(filename.split('-')[6])]
+
+            emotions = {'01': 1, '02': 2, '03': 3, '04': 4, '05': 5, '06': 6, '07': 7, '08': 8}
+            emotion = emotions[filename.split('-')[2]]
+            df = df._append({'actor': actor, 'emotion': emotion}, ignore_index=True)
+        return df
