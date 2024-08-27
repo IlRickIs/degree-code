@@ -4,7 +4,7 @@ import pandas as pd
 import costants as c
 import preprocessing.audio_preprocessing as preprocess
 import features_script.feature_extraction as features_m
-import matplotlib.pyplot as plt
+import classification.Base_Classifier as base_classifier
 
 def produce_features_dataframes(dataset_paths, features_dir):
     """Produce features dataframes for each dataset in dataset_paths"""
@@ -14,7 +14,7 @@ def produce_features_dataframes(dataset_paths, features_dir):
     
     for dataset_path in dataset_paths:
         os.makedirs(features_dir, exist_ok=True)
-        print(f'----------WORKING WITH {dataset_path}----------\n')
+        print(f'----------FEATURE EXTRACTION AND PREPROCESSING OF {dataset_path}----------\n')
         dataset_name = dataset_path.split('/')[-2]
 
         if not os.path.exists(features_dir + dataset_name + '.csv'):
@@ -45,5 +45,15 @@ def produce_features_dataframes(dataset_paths, features_dir):
 if __name__ == '__main__':
     # Produce features dataframes
     produce_features_dataframes(c.DATASETS_PATHS, c.FEATURES_PATH)
+
+    df = pd.read_csv(c.FEATURES_PATH + 'EMOVO.csv')
+    #drop from the df all the rows that have a value of 2,7,8,6 in the emotion column
+    df = df[~df['emotion'].isin([2, 7, 8, 6])]
+    
+    features = df.drop(columns=['actor', 'emotion'])
+    target = df['emotion']
+
+    classifier = base_classifier.Base_Classifier(features, target)
+    classifier.svm_classifier()
 
         

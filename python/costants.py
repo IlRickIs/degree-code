@@ -11,3 +11,7 @@ TARGET_SR = 48000
 DATASETS_ROOT = 'datasets_raw/'
 DATASETS_PATHS = ['datasets_raw/EMOVO/', 'datasets_raw/RAVDESS/']
 FEATURES_PATH = 'features/'
+
+#constants used for classification
+PARAMS_BASE_PATH = 'params/base_classifiers/'
+PARAMS_LOO_PATH = 'params/loo_classifiers/'
