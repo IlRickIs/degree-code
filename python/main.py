@@ -62,6 +62,17 @@ def classify_task_base_classifier():
         classifier = base_classifier.Base_Classifier(features, target, dataset_name)
         print('SVM classifier')
         classifier.svm_classifier()
+        print()
+
+        print('Decision Tree classifier')
+        classifier.decision_tree_classifier()
+        print()
+
+        print('Linear Discriminant Analysis classifier')
+        classifier.lda_classifier()
+        print()
+
+        print(f'Base classification of {dataset_name} completed\n')
 
 if __name__ == '__main__':
     # Produce features dataframes
@@ -69,6 +80,8 @@ if __name__ == '__main__':
 
     # Classify task using the base classifier
     classify_task_base_classifier()
+
+    #classify task using the LOSO (Leave One Subject Out) validation approach
    
 
         
