@@ -20,10 +20,14 @@ class Base_Classifier:
         clf.set_params(**params)
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
-        report = classification_report(y_test, y_pred)
-        confusion = confusion_matrix(y_test, y_pred)
+
+        report = classification_report(y_test, y_pred, labels=[1, 3, 4, 5], target_names=['neu', 'happy', 'sad', 'ang'])
+        confusion = confusion_matrix(y_test, y_pred, labels=[1, 3, 4, 5], normalize='true')
 
         print(report)
         print()
         print(confusion)
         print()
+        report_dict = classification_report(y_test, y_pred, labels=[1, 3, 4, 5], target_names=['neu', 'happy', 'sad', 'ang'], output_dict=True)
+        helper.write_report(report_dict, self.dataset_name, '_base_svm', latex=True)
+        helper.write_cool_confusion_matrix(confusion,['neu', 'happy', 'sad', 'ang'], self.dataset_name, '_base_svm')

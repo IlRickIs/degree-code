@@ -1,11 +1,29 @@
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import make_pipeline
 import os
 import costants as c
 import json
+import pandas as pd
+from sklearn.metrics import ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+def write_report(report, dataset_name, classifier_name, latex=False):
+    """Write classification report to file, the report needs to be a dictionary"""
+    os.makedirs(c.REPORTS_BASE_PATH, exist_ok=True)
+    report_df =  pd.DataFrame(report).transpose()
+    report_df.to_csv(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_report.csv')
+
+    if latex:
+        report_df.to_latex(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_report.tex')
+
+def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
+    """Write confusion matrix to file"""
+    os.makedirs(c.REPORTS_BASE_PATH, exist_ok=True)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=disp_labels)
+    disp.plot()
+    plt.savefig(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_confusion_matrix.png')
+        
 
 def optimize_svm_params(X_train, y_train, clf, dataset_name):
     """Optimize SVM parameters"""
@@ -16,7 +34,7 @@ def optimize_svm_params(X_train, y_train, clf, dataset_name):
         'svc__gamma': ['scale', 'auto'],
         'svc__kernel': ['linear', 'rbf', 'poly', 'sigmoid']}
         
-        grid = GridSearchCV(clf, param_grid, refit=True, n_jobs=-1)
+        grid = GridSearchCV(clf, param_grid, refit=True, cv=10, n_jobs=-1)
         grid.fit(X_train, y_train)
         print(grid.best_params_)
         os.makedirs(c.PARAMS_BASE_PATH, exist_ok=True)

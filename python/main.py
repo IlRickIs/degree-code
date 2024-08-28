@@ -43,7 +43,10 @@ def produce_features_dataframes(dataset_paths, features_dir):
             print(f'Features for {dataset_name} already extracted\n')
 
 def classify_task_base_classifier():
-    """Classify task using the base classifier"""
+    """Classify task using the base classifier., the base classifier
+    uses three different classifiers: SVM, Decision Tree and Linear discriminant analysis\n
+    is called base classifier because it doesn't use LOSO validation approach"""
+    
     for dataset_path in c.DATASETS_PATHS:
         dataset_name = dataset_path.split('/')[-2]
         print(f'----------Base classification of {dataset_name}----------\n')
@@ -66,15 +69,6 @@ if __name__ == '__main__':
 
     # Classify task using the base classifier
     classify_task_base_classifier()
-    
-    # df = pd.read_csv(c.FEATURES_PATH + 'EMOVO.csv')
-    # #drop from the df all the rows that have a value of 2,7,8,6 in the emotion column
-    # df = df[~df['emotion'].isin([2, 7, 8, 6])]
-    
-    # features = df.drop(columns=['actor', 'emotion'])
-    # target = df['emotion']
-
-    # classifier = base_classifier.Base_Classifier(features, target)
-    # classifier.svm_classifier()
+   
 
         
