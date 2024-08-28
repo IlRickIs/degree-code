@@ -42,18 +42,39 @@ def produce_features_dataframes(dataset_paths, features_dir):
         else:
             print(f'Features for {dataset_name} already extracted\n')
 
+def classify_task_base_classifier():
+    """Classify task using the base classifier"""
+    for dataset_path in c.DATASETS_PATHS:
+        dataset_name = dataset_path.split('/')[-2]
+        print(f'----------Base classification of {dataset_name}----------\n')
+
+        #load the dataset and filter out the emotions that are not in the reference file
+        df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
+        df = df[~df['emotion'].isin([2, 7, 8, 6])]
+
+        # Load features and target
+        features = df.drop(columns=['actor', 'emotion'])
+        target = df['emotion']
+
+        classifier = base_classifier.Base_Classifier(features, target, dataset_name)
+        print('SVM classifier')
+        classifier.svm_classifier()
+
 if __name__ == '__main__':
     # Produce features dataframes
     produce_features_dataframes(c.DATASETS_PATHS, c.FEATURES_PATH)
 
-    df = pd.read_csv(c.FEATURES_PATH + 'EMOVO.csv')
-    #drop from the df all the rows that have a value of 2,7,8,6 in the emotion column
-    df = df[~df['emotion'].isin([2, 7, 8, 6])]
+    # Classify task using the base classifier
+    classify_task_base_classifier()
     
-    features = df.drop(columns=['actor', 'emotion'])
-    target = df['emotion']
+    # df = pd.read_csv(c.FEATURES_PATH + 'EMOVO.csv')
+    # #drop from the df all the rows that have a value of 2,7,8,6 in the emotion column
+    # df = df[~df['emotion'].isin([2, 7, 8, 6])]
+    
+    # features = df.drop(columns=['actor', 'emotion'])
+    # target = df['emotion']
 
-    classifier = base_classifier.Base_Classifier(features, target)
-    classifier.svm_classifier()
+    # classifier = base_classifier.Base_Classifier(features, target)
+    # classifier.svm_classifier()
 
         

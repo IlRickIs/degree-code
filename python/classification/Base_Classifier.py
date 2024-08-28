@@ -5,9 +5,10 @@ from classification import helper
 from sklearn.preprocessing import StandardScaler
 
 class Base_Classifier:
-    def __init__(self, features, target):
+    def __init__(self, features, target, dataset_name):
         self.features = features
         self.target = target
+        self.dataset_name = dataset_name
     
     def svm_classifier(self):
         """Classify using SVM"""
@@ -15,7 +16,7 @@ class Base_Classifier:
 
         X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=42)
         clf = make_pipeline(StandardScaler(), SVC())
-        params = helper.optimize_svm_params(X_train, y_train, clf)
+        params = helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name)
         clf.set_params(**params)
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
@@ -23,5 +24,6 @@ class Base_Classifier:
         confusion = confusion_matrix(y_test, y_pred)
 
         print(report)
-        print('\n')
+        print()
         print(confusion)
+        print()
