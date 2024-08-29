@@ -5,6 +5,7 @@ import costants as c
 import preprocessing.audio_preprocessing as preprocess
 import features_script.feature_extraction as features_m
 import classification.Base_Classifier as base_classifier
+import classification.LOSO_Classifier as loso_classifier
 
 def produce_features_dataframes(dataset_paths, features_dir):
     """Produce features dataframes for each dataset in dataset_paths"""
@@ -55,24 +56,32 @@ def classify_task_base_classifier():
         df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
         df = df[~df['emotion'].isin([2, 7, 8, 6])]
 
-        # Load features and target
-        features = df.drop(columns=['actor', 'emotion'])
-        target = df['emotion']
+        # # Load features and target #TODO: decomment this after refactoring the code
+        # features = df.drop(columns=['actor', 'emotion'])
+        # target = df['emotion']
 
-        classifier = base_classifier.Base_Classifier(features, target, dataset_name)
+        # classifier = base_classifier.Base_Classifier(features, target, dataset_name)
+        # print('SVM classifier')
+        # classifier.svm_classifier()
+        # print()
+
+        # print('Decision Tree classifier')
+        # classifier.decision_tree_classifier()
+        # print()
+
+        # print('Linear Discriminant Analysis classifier')
+        # classifier.lda_classifier()
+        # print()
+
+        print(f'Base classification of {dataset_name} completed\n') #TODO: move this in the proper function
+        print()
+        print(f'----------LOSO classification of {dataset_name}----------\n')
+        features = df.drop(columns=['emotion'])
+        target = df['emotion']
+        classifier = loso_classifier.LOSO_Classifier(features, target, dataset_name)
         print('SVM classifier')
         classifier.svm_classifier()
-        print()
 
-        print('Decision Tree classifier')
-        classifier.decision_tree_classifier()
-        print()
-
-        print('Linear Discriminant Analysis classifier')
-        classifier.lda_classifier()
-        print()
-
-        print(f'Base classification of {dataset_name} completed\n')
 
 if __name__ == '__main__':
     # Produce features dataframes
