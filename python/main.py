@@ -28,7 +28,7 @@ def produce_features_dataframes(dataset_paths, features_dir):
             features = features_m.extract_features(processed_signals, c.TARGET_SR)
             print(features.shape)
             features = features.copy()
-            #TODO: parse filenames and add to features
+    
             parsed_df = features_m.parse_filenames(files, dataset_paths.index(dataset_path))
             features = pd.concat([parsed_df, features], axis=1)
 
@@ -56,31 +56,53 @@ def classify_task_base_classifier():
         df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
         df = df[~df['emotion'].isin([2, 7, 8, 6])]
 
-        # # Load features and target #TODO: decomment this after refactoring the code
-        # features = df.drop(columns=['actor', 'emotion'])
-        # target = df['emotion']
-
-        # classifier = base_classifier.Base_Classifier(features, target, dataset_name)
-        # print('SVM classifier')
-        # classifier.svm_classifier()
-        # print()
-
-        # print('Decision Tree classifier')
-        # classifier.decision_tree_classifier()
-        # print()
-
-        # print('Linear Discriminant Analysis classifier')
-        # classifier.lda_classifier()
-        # print()
-
-        print(f'Base classification of {dataset_name} completed\n') #TODO: move this in the proper function
-        print()
-        print(f'----------LOSO classification of {dataset_name}----------\n')
-        features = df.drop(columns=['emotion'])
+        # Load features and target 
+        features = df.drop(columns=['actor', 'emotion'])
         target = df['emotion']
-        classifier = loso_classifier.LOSO_Classifier(features, target, dataset_name)
+
+        classifier = base_classifier.Base_Classifier(features, target, dataset_name)
         print('SVM classifier')
         classifier.svm_classifier()
+        print()
+
+        print('Decision Tree classifier')
+        classifier.decision_tree_classifier()
+        print()
+
+        print('Linear Discriminant Analysis classifier')
+        classifier.lda_classifier()
+        print()
+
+        print(f'Base classification of {dataset_name} completed\n') 
+        print()
+    
+def classify_task_loso_classifier():
+    """Classify task using the LOSO (Leave One Subject Out) validation approach"""
+    for dataset_path in c.DATASETS_PATHS:
+        dataset_name = dataset_path.split('/')[-2]
+        print(f'----------LOSO classification of {dataset_name}----------\n')
+
+        # Load the dataset and filter out the emotions that are not in the reference file
+        df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
+        df = df[~df['emotion'].isin([2, 7, 8, 6])]
+
+        # Load features and target
+        features = df.drop(columns=['emotion'])
+        target = df['emotion']
+
+        classifier = loso_classifier.LOSO_Classifier(features, target, dataset_name)
+        # print(classifier.groups)
+        # print()
+        # print(classifier.features)
+        # print()
+        # print(classifier.target)
+        
+        print('SVM classifier')
+        classifier.svm_classifier()
+        print()
+
+        print(f'LOSO classification of {dataset_name} completed\n')
+        print()
 
 
 if __name__ == '__main__':
@@ -88,9 +110,9 @@ if __name__ == '__main__':
     produce_features_dataframes(c.DATASETS_PATHS, c.FEATURES_PATH)
 
     # Classify task using the base classifier
-    classify_task_base_classifier()
+    #classify_task_base_classifier()
 
     #classify task using the LOSO (Leave One Subject Out) validation approach
-   
+    classify_task_loso_classifier()
 
         

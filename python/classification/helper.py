@@ -25,9 +25,9 @@ def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     plt.savefig(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_confusion_matrix.png')
         
 
-def optimize_svm_params(X_train, y_train, clf, dataset_name):
+def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize SVM parameters"""
-    if not os.path.exists(c.PARAMS_BASE_PATH+dataset_name+'_svm_params.json'):
+    if not os.path.exists(params_path+dataset_name+'_svm_params.json'):
         print('finding SVM params of '+dataset_name)
         param_grid = {
         'svc__C': [0.1, 0.5, 1, 10, 50],
@@ -37,20 +37,20 @@ def optimize_svm_params(X_train, y_train, clf, dataset_name):
         grid = GridSearchCV(clf, param_grid, refit=True, cv=10, n_jobs=-1)
         grid.fit(X_train, y_train)
         print(grid.best_params_)
-        os.makedirs(c.PARAMS_BASE_PATH, exist_ok=True)
+        os.makedirs(params_path, exist_ok=True)
 
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_svm_params.json', 'w') as f:
+        with open(params_path + dataset_name+'_svm_params.json', 'w') as f:
             json.dump(grid.best_params_, f)
 
         return grid.best_params_
     else:
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_svm_params.json', 'r') as f:
+        with open(params_path + dataset_name+'_svm_params.json', 'r') as f:
             print('Loading SVM params of '+dataset_name)
             return json.load(f)
 
-def optimize_decision_tree_params(X_train, y_train, clf, dataset_name):
+def optimize_decision_tree_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize Decision Tree parameters"""
-    if not os.path.exists(c.PARAMS_BASE_PATH+dataset_name+'_decision_tree_params.json'):
+    if not os.path.exists(params_path+dataset_name+'_decision_tree_params.json'):
         print('finding Decision Tree params of '+dataset_name)
         param_grid = {
             'max_depth': [3, 5, 10, 50, 100, None],
@@ -63,20 +63,20 @@ def optimize_decision_tree_params(X_train, y_train, clf, dataset_name):
         grid = GridSearchCV(clf, param_grid, refit=True, cv=10, n_jobs=-1)
         grid.fit(X_train, y_train)
         print(grid.best_params_)
-        os.makedirs(c.PARAMS_BASE_PATH, exist_ok=True)
+        os.makedirs(params_path, exist_ok=True)
 
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_decision_tree_params.json', 'w') as f:
+        with open(params_path + dataset_name+'_decision_tree_params.json', 'w') as f:
             json.dump(grid.best_params_, f)
 
         return grid.best_params_
     else:
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_decision_tree_params.json', 'r') as f:
+        with open(params_path + dataset_name+'_decision_tree_params.json', 'r') as f:
             print('Loading Decision Tree params of '+dataset_name)
             return json.load(f)
     
-def optimize_lda_params(X_train, y_train, clf, dataset_name):
+def optimize_lda_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize LDA parameters"""
-    if not os.path.exists(c.PARAMS_BASE_PATH+dataset_name+'_lda_params.json'):
+    if not os.path.exists(params_path+dataset_name+'_lda_params.json'):
         print('finding LDA params of '+dataset_name)
         param_grid = {
             'lineardiscriminantanalysis__solver': ['lsqr', 'eigen'],
@@ -85,14 +85,14 @@ def optimize_lda_params(X_train, y_train, clf, dataset_name):
         grid = GridSearchCV(clf, param_grid, refit=True, cv=10, n_jobs=-1)
         grid.fit(X_train, y_train)
         print(grid.best_params_)
-        os.makedirs(c.PARAMS_BASE_PATH, exist_ok=True)
+        os.makedirs(params_path, exist_ok=True)
 
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_lda_params.json', 'w') as f:
+        with open(params_path + dataset_name+'_lda_params.json', 'w') as f:
             json.dump(grid.best_params_, f)
 
         return grid.best_params_
     else:
-        with open(c.PARAMS_BASE_PATH + dataset_name+'_lda_params.json', 'r') as f:
+        with open(params_path + dataset_name+'_lda_params.json', 'r') as f:
             print('Loading LDA params of '+dataset_name)
             return json.load(f)
  
