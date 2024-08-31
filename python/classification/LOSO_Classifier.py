@@ -40,6 +40,7 @@ class LOSO_Classifier:
         features = scaler.fit_transform(self.features)
         features = pd.DataFrame(features, columns=columns)
         
+        print(self.groups)
 
         actors = []
         accuracies = []
@@ -50,36 +51,60 @@ class LOSO_Classifier:
         for train_idx, test_idx in loso.split(features, self.target, groups=self.groups):
             X_train, X_test = features.iloc[train_idx], features.iloc[test_idx]
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
+            X_train = X_train.iloc[59:, :5]
+            X_test = X_test.iloc[:, :5]
+            print("----TRAIN----")
+            print(X_train.head())
+            print(X_train.tail())
+            print()
+            print(y_train.head())
+            print(y_train.tail())
 
-            clf = make_pipeline(SVC())
-            helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
-            clf.fit(X_train, y_train)
-            y_pred = clf.predict(X_test)
-
-            print('test - pred: ', set(y_test) - set(y_pred))
-            # Calcola le metriche macro per multi-classe
-            precision = precision_score(y_test, y_pred, average='macro')
-            accuracy = accuracy_score(y_test, y_pred)
-            recall = recall_score(y_test, y_pred, average='macro')
-            f1 = f1_score(y_test, y_pred, average='macro')
+            print("----TEST----")
+            print(X_test.head())
+            print(X_test.tail())
+            print()
+            print(y_test.head())
+            print(y_test.tail())
             actor = self.groups.iloc[test_idx[0]]
-            
+            print(f'Actor: {actor}')
             actors.append(actor)
-            precisions.append(precision)
-            accuracies.append(accuracy)
-            recalls.append(recall)
-            f1_scores.append(f1)
+            break
+            
+
+        # for train_idx, test_idx in loso.split(features, self.target, groups=self.groups):
+        #     X_train, X_test = features.iloc[train_idx], features.iloc[test_idx]
+        #     y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
+
+        #     clf = make_pipeline(SVC())
+        #     helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+        #     clf.fit(X_train, y_train)
+        #     y_pred = clf.predict(X_test)
+
+        #     print('test - pred: ', set(y_test) - set(y_pred))
+        #     # Calcola le metriche macro per multi-classe
+        #     precision = precision_score(y_test, y_pred, average='macro')
+        #     accuracy = accuracy_score(y_test, y_pred)
+        #     recall = recall_score(y_test, y_pred, average='macro')
+        #     f1 = f1_score(y_test, y_pred, average='macro')
+        #     actor = self.groups.iloc[test_idx[0]]
+            
+        #     actors.append(actor)
+        #     precisions.append(precision)
+        #     accuracies.append(accuracy)
+        #     recalls.append(recall)
+        #     f1_scores.append(f1)
         
-        self.__single_actors_report(actors, 
-                                    accuracies, 
-                                    precisions, 
-                                    recalls, 
-                                    f1_scores, 
-                                    C.SINGLE_ACTOR_REPORTS_PATH + self.dataset_name + '_svm_report.txt')
-        #TODO: create a fnc to calculate the average of the metrics
-        print('Average metrics:')
-        report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
-                    Average precision: {sum(precisions)/len(precisions)}\n\
-                    Average recall: {sum(recalls)/len(recalls)}\n\
-                    Average F1: {sum(f1_scores)/len(f1_scores)}\n'
-        print(report)
+        # self.__single_actors_report(actors, 
+        #                             accuracies, 
+        #                             precisions, 
+        #                             recalls, 
+        #                             f1_scores, 
+        #                             C.SINGLE_ACTOR_REPORTS_PATH + self.dataset_name + '_svm_report.txt')
+        # #TODO: create a fnc to calculate the average of the metrics
+        # print('Average metrics:')
+        # report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
+        #             Average precision: {sum(precisions)/len(precisions)}\n\
+        #             Average recall: {sum(recalls)/len(recalls)}\n\
+        #             Average F1: {sum(f1_scores)/len(f1_scores)}\n'
+        # print(report)
