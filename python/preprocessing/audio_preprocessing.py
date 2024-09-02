@@ -33,6 +33,7 @@ def get_dataset_files(dataset_path: str) -> list:
     #exclude non directories
     actors = [a for a in actors if os.path.isdir(dataset_path + a)]
     files = []
+    print(actors)
     for actor in actors:
         actor_path = dataset_path + actor + '/'
         #exclude non wav files

@@ -83,19 +83,18 @@ def classify_task_loso_classifier():
         print(f'----------LOSO classification of {dataset_name}----------\n')
 
         # Load the dataset and filter out the emotions that are not in the reference file
-        df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
-        df = df[~df['emotion'].isin([2, 7, 8, 6])]
+        if dataset_name == "EMOVO":
+            df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
+            df = df[~df['emotion'].isin([2, 7, 8, 6])]
+        else:
+            df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
+            df = df[~df['emotion'].isin([1, 7, 8, 6])]
 
         # Load features and target
         features = df.drop(columns=['emotion'])
         target = df['emotion']
 
         classifier = loso_classifier.LOSO_Classifier(features, target, dataset_name)
-        # print(classifier.groups)
-        # print()
-        # print(classifier.features)
-        # print()
-        # print(classifier.target)
         
         print('SVM classifier')
         classifier.svm_classifier()
@@ -106,13 +105,15 @@ def classify_task_loso_classifier():
 
 
 if __name__ == '__main__':
-    # Produce features dataframes
+    #Produce features dataframes
     produce_features_dataframes(c.DATASETS_PATHS, c.FEATURES_PATH)
 
-    # Classify task using the base classifier
-    #classify_task_base_classifier()
+    #Classify task using the base classifier
+    classify_task_base_classifier()
 
     #classify task using the LOSO (Leave One Subject Out) validation approach
     classify_task_loso_classifier()
 
-        
+    # files = preprocess.get_dataset_files(c.DATASETS_PATHS[0])
+    # for file in files:
+    #     print(file)  

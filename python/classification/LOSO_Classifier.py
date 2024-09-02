@@ -9,6 +9,7 @@ from sklearn.model_selection import LeaveOneGroupOut
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import os
 import pandas as pd
+import numpy as np
 class LOSO_Classifier:
     def __init__(self, features, target, dataset_name):
         self.groups = features['actor']
@@ -16,11 +17,11 @@ class LOSO_Classifier:
         self.target = target
         self.dataset_name = dataset_name
 
-    def __single_actors_report(self, actors, accuracies, precisions, recalls, f1_scores, filename):
-        """Create a report for each actor"""
-        if not os.path.exists(C.SINGLE_ACTOR_REPORTS_PATH):
-            os.makedirs(C.SINGLE_ACTOR_REPORTS_PATH)
-
+    def __big_report(self, actors, accuracies, precisions, 
+                     recalls, f1_scores, never_predicted,
+                     cumulative_cm, filename):
+        """Create a report for each actor, and the average metrics"""
+        os.makedirs(C.REPORTS_LOSO_PATH, exist_ok=True)
         with open(filename, 'w') as f:
             for i in range(len(actors)):
                 f.write(f'Actor: {actors[i]}\n')
@@ -28,6 +29,23 @@ class LOSO_Classifier:
                 f.write(f'Precision: {precisions[i]}\n')
                 f.write(f'Recall: {recalls[i]}\n')
                 f.write(f'F1: {f1_scores[i]}\n\n')
+                f.write(f'Never predicted labels\
+                        for this actor: {never_predicted[i]}\n\n')
+                
+            #write the average metrics
+            print(f'---| Average metrics: |---\n')
+            report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
+                    Average precision: {sum(precisions)/len(precisions)}\n\
+                    Average recall: {sum(recalls)/len(recalls)}\n\
+                    Average F1: {sum(f1_scores)/len(f1_scores)}\n\
+                    never predicted labels: {never_predicted}\n'
+            print(report)
+            f.write(report)
+
+            #write the confusion matrix #TODO: fix this
+            # helper.write_cool_confusion_matrix(cumulative_cm, 
+            #                                    C.LABELS_MAP.values(), 
+            #                                    self.dataset_name, 'loso_svm')
 
     def svm_classifier(self): #TODO: sometimes an actor get 1 in all the metrics, is not possible, correct this
         """Classify using SVM"""
@@ -40,71 +58,53 @@ class LOSO_Classifier:
         features = scaler.fit_transform(self.features)
         features = pd.DataFrame(features, columns=columns)
         
-        print(self.groups)
-
+        #inizializza le liste per le metriche
         actors = []
         accuracies = []
         precisions = []
         recalls = []
         f1_scores = []
+        never_predicted_labels_list = []
+
+        #inizializza la matrice di confusione
+        n_classes = len(np.unique(self.target))
+        cumulative_cm = np.zeros((n_classes, n_classes), dtype=int)
 
         for train_idx, test_idx in loso.split(features, self.target, groups=self.groups):
             X_train, X_test = features.iloc[train_idx], features.iloc[test_idx]
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
-            X_train = X_train.iloc[59:, :5]
-            X_test = X_test.iloc[:, :5]
-            print("----TRAIN----")
-            print(X_train.head())
-            print(X_train.tail())
-            print()
-            print(y_train.head())
-            print(y_train.tail())
 
-            print("----TEST----")
-            print(X_test.head())
-            print(X_test.tail())
-            print()
-            print(y_test.head())
-            print(y_test.tail())
+            clf = make_pipeline(SVC())
+            helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            clf.fit(X_train, y_train)
+            y_pred = clf.predict(X_test)
+
+            
+            # Calcola le metriche macro per multi-classe
+            never_predicted_labels = set(y_test) - set(y_pred)
+            precision = precision_score(y_test, y_pred, average='macro', zero_division=0)
+            accuracy = accuracy_score(y_test, y_pred)
+            recall = recall_score(y_test, y_pred, average='macro', zero_division=0)
+            f1 = f1_score(y_test, y_pred, average='macro', zero_division=0)
             actor = self.groups.iloc[test_idx[0]]
-            print(f'Actor: {actor}')
+            
             actors.append(actor)
-            break
-            
+            precisions.append(precision)
+            accuracies.append(accuracy)
+            recalls.append(recall)
+            f1_scores.append(f1)
+            never_predicted_labels_list.append(never_predicted_labels)
 
-        # for train_idx, test_idx in loso.split(features, self.target, groups=self.groups):
-        #     X_train, X_test = features.iloc[train_idx], features.iloc[test_idx]
-        #     y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
-
-        #     clf = make_pipeline(SVC())
-        #     helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
-        #     clf.fit(X_train, y_train)
-        #     y_pred = clf.predict(X_test)
-
-        #     print('test - pred: ', set(y_test) - set(y_pred))
-        #     # Calcola le metriche macro per multi-classe
-        #     precision = precision_score(y_test, y_pred, average='macro')
-        #     accuracy = accuracy_score(y_test, y_pred)
-        #     recall = recall_score(y_test, y_pred, average='macro')
-        #     f1 = f1_score(y_test, y_pred, average='macro')
-        #     actor = self.groups.iloc[test_idx[0]]
-            
-        #     actors.append(actor)
-        #     precisions.append(precision)
-        #     accuracies.append(accuracy)
-        #     recalls.append(recall)
-        #     f1_scores.append(f1)
+            # Calcola la matrice di confusione
+            cm = confusion_matrix(y_test, y_pred)
+            cumulative_cm += cm
         
-        # self.__single_actors_report(actors, 
-        #                             accuracies, 
-        #                             precisions, 
-        #                             recalls, 
-        #                             f1_scores, 
-        #                             C.SINGLE_ACTOR_REPORTS_PATH + self.dataset_name + '_svm_report.txt')
-        # #TODO: create a fnc to calculate the average of the metrics
-        # print('Average metrics:')
-        # report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
-        #             Average precision: {sum(precisions)/len(precisions)}\n\
-        #             Average recall: {sum(recalls)/len(recalls)}\n\
-        #             Average F1: {sum(f1_scores)/len(f1_scores)}\n'
-        # print(report)
+        self.__big_report(actors, 
+                          accuracies, 
+                          precisions, 
+                          recalls, 
+                          f1_scores,
+                          never_predicted_labels_list,
+                          cumulative_cm,
+                          C.REPORTS_LOSO_PATH + self.dataset_name + '_svm_report.txt')
+        #TODO: create a fnc to calculate the average of the metrics

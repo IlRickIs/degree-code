@@ -33,7 +33,7 @@ class Base_Classifier:
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
 
-        self.__print_report(y_test, y_pred, '_base_svm')
+        self.__print_report(y_test, y_pred, 'base_svm')
     
     def decision_tree_classifier(self):
         """Classify using Decision Tree"""
@@ -46,7 +46,7 @@ class Base_Classifier:
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
 
-        self.__print_report(y_test, y_pred, '_base_decision_tree')
+        self.__print_report(y_test, y_pred, 'base_decision_tree')
 
     def lda_classifier(self):
         """Classify using Linear Discriminant Analysis"""
@@ -59,4 +59,4 @@ class Base_Classifier:
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
 
-        self.__print_report(y_test, y_pred, '_base_lda')
+        self.__print_report(y_test, y_pred, 'base_lda')
