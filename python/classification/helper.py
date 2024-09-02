@@ -28,7 +28,7 @@ def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
 def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize SVM parameters"""
     if not os.path.exists(params_path+dataset_name+'_svm_params.json'):
-        print('finding SVM params of '+dataset_name)
+        #print('finding SVM params of '+dataset_name)
         param_grid = {
         'svc__C': [0.1, 0.5, 1, 10, 50],
         'svc__gamma': ['scale', 'auto'],
@@ -45,7 +45,7 @@ def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PAR
         return grid.best_params_
     else:
         with open(params_path + dataset_name+'_svm_params.json', 'r') as f:
-            print('Loading SVM params of '+dataset_name)
+            #print('Loading SVM params of '+dataset_name)
             return json.load(f)
 
 def optimize_decision_tree_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):

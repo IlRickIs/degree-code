@@ -28,9 +28,11 @@ class LOSO_Classifier:
                 f.write(f'Accuracy: {accuracies[i]}\n')
                 f.write(f'Precision: {precisions[i]}\n')
                 f.write(f'Recall: {recalls[i]}\n')
-                f.write(f'F1: {f1_scores[i]}\n\n')
+                f.write(f'F1: {f1_scores[i]}\n')
                 f.write(f'Never predicted labels for this actor: {never_predicted[i]}\n\n')
-                
+            
+            #remove all set() from never_predicted
+            never_predicted = [item for sublist in never_predicted for item in sublist]
             #write the average metrics
             print(f'\n---| Average metrics: |---')
             report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
