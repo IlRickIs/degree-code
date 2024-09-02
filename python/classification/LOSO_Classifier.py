@@ -29,11 +29,10 @@ class LOSO_Classifier:
                 f.write(f'Precision: {precisions[i]}\n')
                 f.write(f'Recall: {recalls[i]}\n')
                 f.write(f'F1: {f1_scores[i]}\n\n')
-                f.write(f'Never predicted labels\
-                        for this actor: {never_predicted[i]}\n\n')
+                f.write(f'Never predicted labels for this actor: {never_predicted[i]}\n\n')
                 
             #write the average metrics
-            print(f'---| Average metrics: |---\n')
+            print(f'\n---| Average metrics: |---')
             report = f'Average accuracy: {sum(accuracies)/len(accuracies)}\n\
                     Average precision: {sum(precisions)/len(precisions)}\n\
                     Average recall: {sum(recalls)/len(recalls)}\n\
@@ -42,10 +41,14 @@ class LOSO_Classifier:
             print(report)
             f.write(report)
 
-            #write the confusion matrix #TODO: fix this
-            # helper.write_cool_confusion_matrix(cumulative_cm, 
-            #                                    C.LABELS_MAP.values(), 
-            #                                    self.dataset_name, 'loso_svm')
+            #write the confusion matrix
+            if(C.NORMALIZE_MATRIX == 'true'):
+                row_sums = cumulative_cm.sum(axis=1, keepdims=True)
+                cumulative_cm = cumulative_cm / row_sums
+
+            helper.write_cool_confusion_matrix(cumulative_cm, 
+                                               ['neu', 'happy', 'sad', 'ang'], 
+                                               self.dataset_name, 'LOSO_svm')
 
     def svm_classifier(self): #TODO: sometimes an actor get 1 in all the metrics, is not possible, correct this
         """Classify using SVM"""
@@ -107,4 +110,3 @@ class LOSO_Classifier:
                           never_predicted_labels_list,
                           cumulative_cm,
                           C.REPORTS_LOSO_PATH + self.dataset_name + '_svm_report.txt')
-        #TODO: create a fnc to calculate the average of the metrics

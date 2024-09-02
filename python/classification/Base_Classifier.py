@@ -12,7 +12,7 @@ class Base_Classifier:
 
     def __print_report(self,y_test, y_pred, classifier_name):
         report = classification_report(y_test, y_pred, labels=[1, 3, 4, 5], target_names=['neu', 'happy', 'sad', 'ang'])
-        confusion = confusion_matrix(y_test, y_pred, labels=[1, 3, 4, 5], normalize=None)
+        confusion = confusion_matrix(y_test, y_pred, labels=[1, 3, 4, 5], normalize=C.NORMALIZE_MATRIX)
 
         print(report)
         print()

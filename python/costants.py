@@ -13,6 +13,7 @@ DATASETS_PATHS = ['datasets_raw/EMOVO/', 'datasets_raw/RAVDESS/']
 FEATURES_PATH = 'features/'
 
 #constants used for classification
+NORMALIZE_MATRIX = 'true'  #can be literal true or None, used to normalize cf matrix
 PARAMS_BASE_PATH = 'params/base_classifiers/'
 PARAMS_LOSO_PATH = 'params/loso_classifiers/'
 
