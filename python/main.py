@@ -83,11 +83,10 @@ def classify_task_loso_classifier():
         print(f'----------LOSO classification of {dataset_name}----------\n')
 
         # Load the dataset and filter out the emotions that are not in the reference file
+        df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
         if dataset_name == "EMOVO":
-            df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
             df = df[~df['emotion'].isin([2, 7, 8, 6])]
         else:
-            df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
             df = df[~df['emotion'].isin([1, 7, 8, 6])]
 
         # Load features and target

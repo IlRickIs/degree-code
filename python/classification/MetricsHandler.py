@@ -66,4 +66,5 @@ class MetricsHandler:
         helper.write_cool_confusion_matrix(self.cumulative_cm, 
                                             ['neu', 'happy', 'sad', 'ang'], 
                                             self.dataset_name, self.classifier_name)
+        print(self.cumulative_cm)
         

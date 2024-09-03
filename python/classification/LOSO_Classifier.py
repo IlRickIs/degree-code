@@ -26,7 +26,7 @@ class LOSO_Classifier:
         features = scaler.fit_transform(self.features)
         features = pd.DataFrame(features, columns=columns)
         
-        #inizializza le liste per le metriche #TODO: refactor this by creating one object that contains all the metrics
+        #inizializza le liste per le metriche 
         n_classes = len(np.unique(self.target))
         metrics_handler = MetricsHandler(self.dataset_name, 'LOSO_svm', n_classes)
 
@@ -44,3 +44,34 @@ class LOSO_Classifier:
             metrics_handler.add_actor_metrics(y_test, y_pred, actor)
         
         metrics_handler.print_big_report()
+
+    def decision_tree_classifier(self):
+        """Classify using Decision Tree"""
+        from sklearn.tree import DecisionTreeClassifier
+
+        features = self.features
+        loso = LeaveOneGroupOut()
+        scaler = StandardScaler()
+        columns = features.columns
+        features = scaler.fit_transform(features)
+        features = pd.DataFrame(features, columns=columns)
+
+        #inizializza le liste per le metriche
+        n_classes = len(np.unique(self.target))
+        metrics_handler = MetricsHandler(self.dataset_name, 'LOSO_decision_tree', n_classes)
+
+        for train_idx, test_idx in loso.split(features, self.target, groups=self.groups):
+            X_train, X_test = features.iloc[train_idx], features.iloc[test_idx]
+            y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
+
+            clf = DecisionTreeClassifier()
+            helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            clf.fit(X_train, y_train)
+            y_pred = clf.predict(X_test)
+            actor = self.groups.iloc[test_idx[0]]
+
+            #aggiungi le metriche al report
+            metrics_handler.add_actor_metrics(y_test, y_pred, actor)
+        
+        metrics_handler.print_big_report()
+

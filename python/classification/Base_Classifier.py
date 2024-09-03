@@ -1,6 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.pipeline import make_pipeline
+from sklearn import decomposition, tree
+from sklearn.pipeline import make_pipeline, Pipeline
 from classification import helper
 from sklearn.preprocessing import StandardScaler
 import costants as C
@@ -40,7 +41,10 @@ class Base_Classifier:
         from sklearn.tree import DecisionTreeClassifier
 
         X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=C.RANDOM_STATE)
-        clf = DecisionTreeClassifier()
+        sc = StandardScaler()
+        pca = decomposition.PCA()
+        dtreeCLF = tree.DecisionTreeClassifier()
+        clf = Pipeline(steps=[('sc', sc), ('pca', pca), ('dtreeCLF', dtreeCLF)])
         params = helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name)
         clf.set_params(**params)
         clf.fit(X_train, y_train)

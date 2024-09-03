@@ -52,15 +52,17 @@ def optimize_decision_tree_params(X_train, y_train, clf, dataset_name, params_pa
     """Optimize Decision Tree parameters"""
     if not os.path.exists(params_path+dataset_name+'_decision_tree_params.json'):
         print('finding Decision Tree params of '+dataset_name)
-        param_grid = {
-            'max_depth': [3, 5, 10, 50, 100, None],
-            'min_samples_split': [2, 5, 10, 20, 30],
-            'min_samples_leaf': [1, 2, 4, 8, 16],
-            'max_features': [None, 'sqrt', 'log2'],
-            'criterion': ['gini', 'entropy']
-}
+
+        n_components = list(range(1, X_train.shape[1]+1))
+        criterion = ['gini', 'entropy']
+        max_depth = [2, 4, 6, 8, 10, 15, 30, 35, None]
+
+        parameters = dict(pca__n_components=n_components,
+                          dtreeCLF__criterion=criterion,
+                          dtreeCLF__max_depth=max_depth
+                        )
         
-        grid = GridSearchCV(clf, param_grid, refit=True, cv=10, n_jobs=-1)
+        grid = GridSearchCV(clf, parameters, refit=True, cv=10, scoring='accuracy', n_jobs=-1)
         grid.fit(X_train, y_train)
         print(grid.best_params_)
         os.makedirs(params_path, exist_ok=True)
