@@ -99,6 +99,14 @@ def classify_task_loso_classifier():
         classifier.svm_classifier()
         print()
 
+        print('Decision Tree classifier')
+        classifier.decision_tree_classifier()
+        print()
+
+        print('Linear Discriminant Analysis classifier')
+        classifier.lda_classifier()
+        print()
+        
         print(f'LOSO classification of {dataset_name} completed\n')
         print()
 

@@ -51,8 +51,6 @@ def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PAR
 def optimize_decision_tree_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize Decision Tree parameters"""
     if not os.path.exists(params_path+dataset_name+'_decision_tree_params.json'):
-        print('finding Decision Tree params of '+dataset_name)
-
         n_components = list(range(1, X_train.shape[1]+1))
         criterion = ['gini', 'entropy']
         max_depth = [2, 4, 6, 8, 10, 15, 30, 35, None]
@@ -73,13 +71,11 @@ def optimize_decision_tree_params(X_train, y_train, clf, dataset_name, params_pa
         return grid.best_params_
     else:
         with open(params_path + dataset_name+'_decision_tree_params.json', 'r') as f:
-            print('Loading Decision Tree params of '+dataset_name)
             return json.load(f)
     
 def optimize_lda_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
     """Optimize LDA parameters"""
     if not os.path.exists(params_path+dataset_name+'_lda_params.json'):
-        print('finding LDA params of '+dataset_name)
         param_grid = {
             'lineardiscriminantanalysis__solver': ['lsqr', 'eigen'],
             'lineardiscriminantanalysis__shrinkage': ['auto', None]}
@@ -95,7 +91,6 @@ def optimize_lda_params(X_train, y_train, clf, dataset_name, params_path = c.PAR
         return grid.best_params_
     else:
         with open(params_path + dataset_name+'_lda_params.json', 'r') as f:
-            print('Loading LDA params of '+dataset_name)
             return json.load(f)
  
 
