@@ -5,7 +5,7 @@ from sklearn.pipeline import make_pipeline, Pipeline
 from classification import helper
 from sklearn.preprocessing import StandardScaler
 import costants as C
-class Base_Classifier:
+class BaseClassifier:
     def __init__(self, features, target, dataset_name):
         self.features = features
         self.target = target

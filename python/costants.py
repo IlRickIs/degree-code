@@ -14,6 +14,7 @@ FEATURES_PATH = 'features/'
 
 #constants used for classification
 NORMALIZE_MATRIX = 'true'  #can be literal true or None, used to normalize cf matrix
+USE_PARAMS = 'base' #can be 'base' or 'loso', used to select the parameters to use
 PARAMS_BASE_PATH = 'params/base_classifiers/'
 PARAMS_LOSO_PATH = 'params/loso_classifiers/'
 

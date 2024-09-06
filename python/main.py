@@ -4,8 +4,8 @@ import pandas as pd
 import costants as c
 import preprocessing.audio_preprocessing as preprocess
 import features_script.feature_extraction as features_m
-import classification.Base_Classifier as base_classifier
-import classification.LOSO_Classifier as loso_classifier
+import classification.BaseClassifier as base_classifier
+import classification.LosoClassifier as loso_classifier
 
 def produce_features_dataframes(dataset_paths, features_dir):
     """Produce features dataframes for each dataset in dataset_paths"""
@@ -60,7 +60,7 @@ def classify_task_base_classifier():
         features = df.drop(columns=['actor', 'emotion'])
         target = df['emotion']
 
-        classifier = base_classifier.Base_Classifier(features, target, dataset_name)
+        classifier = base_classifier.BaseClassifier(features, target, dataset_name)
         print('SVM classifier')
         classifier.svm_classifier()
         print()
@@ -93,7 +93,7 @@ def classify_task_loso_classifier():
         features = df.drop(columns=['emotion'])
         target = df['emotion']
 
-        classifier = loso_classifier.LOSO_Classifier(features, target, dataset_name)
+        classifier = loso_classifier.LosoClassifier(features, target, dataset_name)
         
         print('SVM classifier')
         classifier.svm_classifier()

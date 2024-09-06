@@ -8,7 +8,7 @@ from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 import numpy as np
 from classification.MetricsHandler import MetricsHandler
-class LOSO_Classifier:
+class LosoClassifier:
     def __init__(self, features, target, dataset_name):
         self.groups = features['actor']
         self.features = features.drop(columns=['actor'])
@@ -35,7 +35,8 @@ class LOSO_Classifier:
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
 
             clf = make_pipeline(SVC())
-            helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             actor = self.groups.iloc[test_idx[0]]
@@ -70,7 +71,8 @@ class LOSO_Classifier:
             pca = decomposition.PCA()
             dtreeCLF = tree.DecisionTreeClassifier()
             clf = Pipeline(steps=[('sc', sc), ('pca', pca), ('dtreeCLF', dtreeCLF)])
-            helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             actor = self.groups.iloc[test_idx[0]]
@@ -100,7 +102,8 @@ class LOSO_Classifier:
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
 
             clf = make_pipeline(LinearDiscriminantAnalysis())
-            helper.optimize_lda_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_lda_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
             actor = self.groups.iloc[test_idx[0]]
