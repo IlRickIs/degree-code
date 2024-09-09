@@ -4,8 +4,6 @@ import pandas as pd
 import costants as c
 import preprocessing.audio_preprocessing as preprocess
 import features_script.feature_extraction as features_m
-import classification.BaseClassifier as base_classifier
-import classification.LosoClassifier as loso_classifier
 
 def produce_features_dataframes(dataset_paths, features_dir):
     """Produce features dataframes for each dataset in dataset_paths"""
@@ -47,6 +45,7 @@ def classify_task_base_classifier():
     """Classify task using the base classifier., the base classifier
     uses three different classifiers: SVM, Decision Tree and Linear discriminant analysis\n
     is called base classifier because it doesn't use LOSO validation approach"""
+    import classification.BaseClassifier as base_classifier
     
     for dataset_path in c.DATASETS_PATHS:
         dataset_name = dataset_path.split('/')[-2]
@@ -78,6 +77,7 @@ def classify_task_base_classifier():
     
 def classify_task_loso_classifier():
     """Classify task using the LOSO (Leave One Subject Out) validation approach"""
+    import classification.LosoClassifier as loso_classifier
     for dataset_path in c.DATASETS_PATHS:
         dataset_name = dataset_path.split('/')[-2]
         print(f'----------LOSO classification of {dataset_name}----------\n')
@@ -110,6 +110,33 @@ def classify_task_loso_classifier():
         print(f'LOSO classification of {dataset_name} completed\n')
         print()
 
+def classify_task_cross_corpus_classifier(train_dataset, test_dataset):
+    """Classify task using cross corpus training approach"""
+    import classification.CrossCorpusClassifier as cross_corpus_classifier
+    print(f'----------Using {train_dataset} as training dataset and {test_dataset} as testing dataset----------\n')
+
+    # Load the training dataset and filter out the emotions that are not in the reference file
+    df_train = pd.read_csv(c.FEATURES_PATH + train_dataset + '.csv')
+    df_train = df_train[~df_train['emotion'].isin([2, 7, 8, 6])]
+
+    # Load the testing dataset and filter out the emotions that are not in the reference file
+    df_test = pd.read_csv(c.FEATURES_PATH + test_dataset + '.csv')
+    df_test = df_test[~df_test['emotion'].isin([2, 7, 8, 6])]
+
+    # Load features and target
+    features_train = df_train.drop(columns=['emotion', 'actor'])
+    target_train = df_train['emotion']
+    features_test = df_test.drop(columns=['emotion', 'actor'])
+    target_test = df_test['emotion']
+
+    classifier = cross_corpus_classifier.CrossCorpusClassifier(features_train, target_train, features_test, target_test, train_dataset)
+
+    print('SVM classifier')
+    classifier.svm_classifier()
+    print()
+
+
+
 
 if __name__ == '__main__':
     #Produce features dataframes
@@ -120,6 +147,10 @@ if __name__ == '__main__':
 
     #classify task using the LOSO (Leave One Subject Out) validation approach
     classify_task_loso_classifier()
+
+    #classify task using cross corpus training approach
+    classify_task_cross_corpus_classifier('EMOVO', 'RAVDESS')
+    classify_task_cross_corpus_classifier('RAVDESS', 'EMOVO')
 
     # files = preprocess.get_dataset_files(c.DATASETS_PATHS[0])
     # for file in files:

@@ -1,7 +1,7 @@
 import costants as c
 from sklearn import svm
 import pandas as pd
-import helper
+from classification import helper
 
 class CrossCorpusClassifier:
     def __init__(self, training_corpus,training_labels, testing_corpus, testing_labels, dataset_name):
@@ -10,6 +10,16 @@ class CrossCorpusClassifier:
         self.testing_corpus = testing_corpus
         self.testing_labels = testing_labels
         self.dataset_name = dataset_name
+    
+    def __write_report(self, report, dataset_name, classifier_name, latex=False):
+        """Write classification report to file, the report needs to be a dictionary"""
+        import os
+        os.makedirs(c.REPORTS_CROSS_CORPUS_PATH, exist_ok=True)
+        report_df =  pd.DataFrame(report).transpose()
+        report_df.to_csv(c.REPORTS_CROSS_CORPUS_PATH + dataset_name + '_' + classifier_name + '_report.csv')
+
+        if latex:
+            report_df.to_latex(c.REPORTS_CROSS_CORPUS_PATH + dataset_name + '_' + classifier_name + '_report.tex')
     
     def __print_report(self, y_test, y_pred, classifier_name):
         from sklearn.metrics import classification_report, confusion_matrix
@@ -21,7 +31,7 @@ class CrossCorpusClassifier:
         print(confusion)
         print()
         report_dict = classification_report(y_test, y_pred, labels=[1, 3, 4, 5], target_names=['neu', 'happy', 'sad', 'ang'], output_dict=True)
-        helper.write_report(report_dict, self.dataset_name, classifier_name, latex=True)
+        self.__write_report(report_dict, self.dataset_name, classifier_name, latex=True)
         helper.write_cool_confusion_matrix(confusion,['neu', 'happy', 'sad', 'ang'], self.dataset_name, classifier_name)
     
     def fit_scaler(self, training_corpus):
@@ -49,6 +59,8 @@ class CrossCorpusClassifier:
         
     def svm_classifier(self):
         """Classify using the SVM classifier"""
+        from sklearn.svm import SVC
+        from sklearn.pipeline import make_pipeline
         #scale the data
         scaler = self.fit_scaler(self.training_corpus)
         X_train, X_test = self.get_split(scaler)
@@ -59,10 +71,12 @@ class CrossCorpusClassifier:
 
         #initialize the classifier 
         params_base = helper.load_params(c.PARAMS_BASE_PATH + self.dataset_name + '_svm_params.json')
-        clf1 = svm.SVC(**params_base)
+        clf1 = make_pipeline(SVC())
+        clf1.set_params(**params_base)
         
         params_loso = helper.load_params(c.PARAMS_LOSO_PATH + self.dataset_name + '_svm_params.json')
-        clf2 = svm.SVC(**params_loso)
+        clf2 = make_pipeline(SVC())
+        clf2.set_params(**params_loso)
 
         #fit the classifier
         clf1.fit(X_train, y_train)
@@ -70,8 +84,12 @@ class CrossCorpusClassifier:
 
         #find the best classifier
         best_clf = self.get_best_classifier(clf1, clf2, X_test, y_test)
+        if(best_clf == clf1):
+            print('Base classifier params are better')
+        else:
+            print('LOSO classifier params are better')
         y_pred = best_clf.predict(X_test)
 
         #write the report
-        self.__print_report(X_test, y_pred, 'cross_svm')
+        self.__print_report(y_test, y_pred, 'cross_svm')
 
