@@ -4,7 +4,7 @@ from sklearn import decomposition, tree
 from sklearn.pipeline import make_pipeline, Pipeline
 from classification import helper
 from sklearn.preprocessing import StandardScaler
-import costants as C
+import costants as c
 class BaseClassifier:
     def __init__(self, features, target, dataset_name):
         self.features = features
@@ -13,7 +13,7 @@ class BaseClassifier:
 
     def __print_report(self,y_test, y_pred, classifier_name):
         report = classification_report(y_test, y_pred, labels=[1, 3, 4, 5], target_names=['neu', 'happy', 'sad', 'ang'])
-        confusion = confusion_matrix(y_test, y_pred, labels=[1, 3, 4, 5], normalize=C.NORMALIZE_MATRIX)
+        confusion = confusion_matrix(y_test, y_pred, labels=[1, 3, 4, 5], normalize=c.NORMALIZE_MATRIX)
 
         print(report)
         print()
@@ -27,7 +27,7 @@ class BaseClassifier:
         """Classify using SVM"""
         from sklearn.svm import SVC
 
-        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=C.RANDOM_STATE)
+        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=c.RANDOM_STATE)
         clf = make_pipeline(StandardScaler(), SVC())
         params = helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name)
         clf.set_params(**params)
@@ -40,7 +40,7 @@ class BaseClassifier:
         """Classify using Decision Tree"""
         from sklearn.tree import DecisionTreeClassifier
 
-        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=C.RANDOM_STATE)
+        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=c.RANDOM_STATE)
         sc = StandardScaler()
         pca = decomposition.PCA()
         dtreeCLF = tree.DecisionTreeClassifier()
@@ -56,7 +56,7 @@ class BaseClassifier:
         """Classify using Linear Discriminant Analysis"""
         from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=C.RANDOM_STATE)
+        X_train, X_test, y_train, y_test = train_test_split(self.features, self.target, test_size=0.2, random_state=c.RANDOM_STATE)
         clf = make_pipeline(StandardScaler(), LinearDiscriminantAnalysis())
         params = helper.optimize_lda_params(X_train, y_train, clf, self.dataset_name)
         clf.set_params(**params)

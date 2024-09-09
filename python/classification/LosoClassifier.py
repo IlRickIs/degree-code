@@ -3,7 +3,7 @@
 from sklearn.pipeline import make_pipeline
 from classification import helper
 from sklearn.preprocessing import StandardScaler
-import costants as C
+import costants as c
 from sklearn.model_selection import LeaveOneGroupOut
 import pandas as pd
 import numpy as np
@@ -35,7 +35,7 @@ class LosoClassifier:
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
 
             clf = make_pipeline(SVC())
-            params = helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_svm_params(X_train, y_train, clf, self.dataset_name, c.PARAMS_LOSO_PATH)
             clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
@@ -71,7 +71,7 @@ class LosoClassifier:
             pca = decomposition.PCA()
             dtreeCLF = tree.DecisionTreeClassifier()
             clf = Pipeline(steps=[('sc', sc), ('pca', pca), ('dtreeCLF', dtreeCLF)])
-            params = helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_decision_tree_params(X_train, y_train, clf, self.dataset_name, c.PARAMS_LOSO_PATH)
             clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)
@@ -102,7 +102,7 @@ class LosoClassifier:
             y_train, y_test = self.target.iloc[train_idx], self.target.iloc[test_idx]
 
             clf = make_pipeline(LinearDiscriminantAnalysis())
-            params = helper.optimize_lda_params(X_train, y_train, clf, self.dataset_name, C.PARAMS_LOSO_PATH)
+            params = helper.optimize_lda_params(X_train, y_train, clf, self.dataset_name, c.PARAMS_LOSO_PATH)
             clf.set_params(**params)
             clf.fit(X_train, y_train)
             y_pred = clf.predict(X_test)

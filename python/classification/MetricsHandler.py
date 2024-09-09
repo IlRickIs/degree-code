@@ -1,14 +1,14 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import numpy as np
 import os
-import costants as C
+import costants as c
 from classification import helper
 class MetricsHandler:
     def __init__(self, dataset_name, classif_name, n_classes):
         """Initialize the metrics handler\n
         filename: str, the name of the file to write the metrics to,
         for convention use the format: dataset_name_classifier_name"""
-        self.filename = C.REPORTS_LOSO_PATH + dataset_name + '_' + classif_name + '_report.txt'
+        self.filename = c.REPORTS_LOSO_PATH + dataset_name + '_' + classif_name + '_report.txt'
         self.dataset_name = dataset_name
         self.classifier_name = classif_name
         self.actors = []
@@ -59,7 +59,7 @@ class MetricsHandler:
             print(report)
             f.write(report)
             
-        if(C.NORMALIZE_MATRIX == 'true'):
+        if(c.NORMALIZE_MATRIX == 'true'):
             row_sums = self.cumulative_cm.sum(axis=1, keepdims=True)
             self.cumulative_cm = self.cumulative_cm / row_sums
 

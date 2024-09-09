@@ -92,6 +92,11 @@ def optimize_lda_params(X_train, y_train, clf, dataset_name, params_path = c.PAR
     else:
         with open(params_path + dataset_name+'_lda_params.json', 'r') as f:
             return json.load(f)
+    
+def load_params(path):
+    """Load parameters from file"""
+    with open(path, 'r') as f:
+        return json.load(f)
  
 
     
