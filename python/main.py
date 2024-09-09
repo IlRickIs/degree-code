@@ -135,6 +135,14 @@ def classify_task_cross_corpus_classifier(train_dataset, test_dataset):
     classifier.svm_classifier()
     print()
 
+    print('Decision Tree classifier')
+    classifier.decision_tree_classifier()
+    print()
+
+    print('Linear Discriminant Analysis classifier')
+    classifier.lda_classifier()
+    print()
+
 
 
 

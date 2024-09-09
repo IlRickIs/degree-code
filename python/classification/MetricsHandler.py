@@ -41,6 +41,9 @@ class MetricsHandler:
     
     def print_big_report(self):
         """Create a report for each actor, and the average metrics"""
+        path = os.path.dirname(self.filename)
+        if not os.path.exists(path):
+            os.makedirs(path)
         with open(self.filename, 'w') as f:
             for i in range(len(self.actors)):
                 f.write(f'Actor: {self.actors[i]}\n')
