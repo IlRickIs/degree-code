@@ -147,15 +147,14 @@ def classify_task_cross_corpus_classifier(train_dataset, test_dataset):
 def produce_combined_dataset(dataset_paths):
     """Produce a combined dataset from the datasets in dataset_paths"""
     combined_df = pd.DataFrame()
-    endName = str()
     for dataset_path in dataset_paths:
         dataset_name = dataset_path.split('/')[-2]
         df = pd.read_csv(c.FEATURES_PATH + dataset_name + '.csv')
+        # modify the column actor to avoid duplicates
+        df['actor'] = df['actor'].apply(lambda x: str(x) + dataset_name)
         combined_df = pd.concat([combined_df, df], axis=0)
-        endName += dataset_name + 'w'
 
-    endName = endName[:-1]
-    combined_df.to_csv(c.FEATURES_PATH + endName, index=False)
+    combined_df.to_csv(c.FEATURES_PATH + "COMBINED"+".csv", index=False)
     print('Combined dataset produced\n')
 
 
