@@ -8,15 +8,6 @@ import pandas as pd
 from sklearn.metrics import ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 
-def write_report(report, dataset_name, classifier_name, latex=False):
-    """Write classification report to file, the report needs to be a dictionary"""
-    os.makedirs(c.REPORTS_BASE_PATH, exist_ok=True)
-    report_df =  pd.DataFrame(report).transpose()
-    report_df.to_csv(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_report.csv')
-
-    if latex:
-        report_df.to_latex(c.REPORTS_BASE_PATH + dataset_name + '_' + classifier_name + '_report.tex')
-
 def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     """Write confusion matrix to file"""
     os.makedirs(c.REPORTS_CM_PATH, exist_ok=True)
