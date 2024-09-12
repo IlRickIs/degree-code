@@ -65,9 +65,12 @@ class CrossCorpusClassifier:
         """Classify using the SVM classifier"""
         from sklearn.svm import SVC
         from sklearn.pipeline import make_pipeline
-        #scale the data
-        scaler = self.fit_scaler(self.training_corpus)
-        X_train, X_test = self.get_split(scaler)
+        # #scale the data
+        # scaler = self.fit_scaler(self.training_corpus)
+        # X_train, X_test = self.get_split(scaler)
+
+        X_train = self.training_corpus
+        X_test = self.testing_corpus
         
         #get labels
         y_train = self.training_labels
@@ -93,7 +96,6 @@ class CrossCorpusClassifier:
         # else:
         #     print('LOSO classifier params are better')
         # y_pred = best_clf.predict(X_test)
-
         classifier = svm.SVC()
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
@@ -107,33 +109,15 @@ class CrossCorpusClassifier:
         from sklearn.tree import DecisionTreeClassifier
         from sklearn.pipeline import make_pipeline
         #scale the data
-        scaler = self.fit_scaler(self.training_corpus)
-        X_train, X_test = self.get_split(scaler)
+        # scaler = self.fit_scaler(self.training_corpus)
+        # X_train, X_test = self.get_split(scaler)
+
+        X_train = self.training_corpus
+        X_test = self.testing_corpus
         
         #get labels
         y_train = self.training_labels
         y_test = self.testing_labels
-
-        #initialize the classifier 
-        # params_base = helper.load_params(c.PARAMS_BASE_PATH + self.dataset_name + '_decision_tree_params.json')
-        # clf1 = make_pipeline(DecisionTreeClassifier())
-        # clf1.set_params(**params_base)
-        
-        # params_loso = helper.load_params(c.PARAMS_LOSO_PATH + self.dataset_name + '_decision_tree_params.json')
-        # clf2 = make_pipeline(DecisionTreeClassifier())
-        # clf2.set_params(**params_loso)
-
-        # #fit the classifier
-        # clf1.fit(X_train, y_train)
-        # clf2.fit(X_train, y_train)
-
-        # #find the best classifier
-        # best_clf = self.get_best_classifier(clf1, clf2, X_test, y_test)
-        # if(best_clf == clf1):
-        #     print('Base classifier params are better')
-        # else:
-        #     print('LOSO classifier params are better')
-        # y_pred = best_clf.predict(X_test)
 
         classifier = DecisionTreeClassifier()
         classifier.fit(X_train, y_train)
@@ -145,34 +129,16 @@ class CrossCorpusClassifier:
     def lda_classifier(self):
         """Classify using the Linear Discriminant Analysis classifier"""
         from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-        #scale the data
-        scaler = self.fit_scaler(self.training_corpus)
-        X_train, X_test = self.get_split(scaler)
+        # #scale the data
+        # scaler = self.fit_scaler(self.training_corpus)
+        # X_train, X_test = self.get_split(scaler)
+
+        X_train = self.training_corpus
+        X_test = self.testing_corpus
         
         #get labels
         y_train = self.training_labels
         y_test = self.testing_labels
-
-        #initialize the classifier 
-        # params_base = helper.load_params(c.PARAMS_BASE_PATH + self.dataset_name + '_lda_params.json')
-        # clf1 = make_pipeline(LinearDiscriminantAnalysis())
-        # clf1.set_params(**params_base)
-        
-        # params_loso = helper.load_params(c.PARAMS_LOSO_PATH + self.dataset_name + '_lda_params.json')
-        # clf2 = make_pipeline(LinearDiscriminantAnalysis())
-        # clf2.set_params(**params_loso)
-
-        # #fit the classifier
-        # clf1.fit(X_train, y_train)
-        # clf2.fit(X_train, y_train)
-
-        # #find the best classifier
-        # best_clf = self.get_best_classifier(clf1, clf2, X_test, y_test)
-        # if(best_clf == clf1):
-        #     print('Base classifier params are better')
-        # else:
-        #     print('LOSO classifier params are better')
-        # y_pred = best_clf.predict(X_test)
 
         classifier = LinearDiscriminantAnalysis()
         classifier.fit(X_train, y_train)

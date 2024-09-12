@@ -53,12 +53,14 @@ class MetricsHandler:
                 f.write(f'F1: {self.f1_scores[i]}\n')
                 f.write(f'Never predicted labels for this actor: {self.never_predicted[i]}\n\n')
 
-            print(f'\n---| Average metrics: |---')
-            report = f'Average accuracy: {np.mean(self.accuracies)}\n\
-                    Average precision: {np.mean(self.precisions)}\n\
-                    Average recall: {np.mean(self.recalls)}\n\
-                    Average F1: {np.mean(self.f1_scores)}\n\
-                    never predicted labels: {list(set([item for sublist in self.never_predicted for item in sublist]))}\n'
+            report = (
+                f"\n---| Average metrics: |---\n"
+                f"Average accuracy: {np.mean(self.accuracies):.4f}\n"
+                f"Average precision: {np.mean(self.precisions):.4f}\n"
+                f"Average recall: {np.mean(self.recalls):.4f}\n"
+                f"Average F1: {np.mean(self.f1_scores):.4f}\n"
+                f"Never predicted labels: {', '.join(map(str, set([item for sublist in self.never_predicted for item in sublist])))}\n"
+            )
             print(report)
             f.write(report)
             
