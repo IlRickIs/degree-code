@@ -14,6 +14,7 @@ def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=disp_labels)
     disp.plot()
     plt.savefig(c.REPORTS_CM_PATH + dataset_name + '_' + classifier_name + '_confusion_matrix.png')
+    plt.close()
         
 
 def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PARAMS_BASE_PATH):
