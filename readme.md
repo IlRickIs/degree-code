@@ -11,7 +11,7 @@ Questo repository contiene il codice per effettuare analisi sui dataset **EMOVO*
    ```
 
 2. **Dataset**  
-   Il codice richiede i dataset **EMOVO** e **RAVDESS** per funzionare. I dataset non sono inclusi in questo repository e devono essere scaricati manualmente da [questo link](https://pera.com).
+   Il codice richiede i dataset **EMOVO** e **RAVDESS** per funzionare. I dataset non sono inclusi in questo repository e devono essere scaricati manualmente da [questo link](https://drive.google.com/file/d/14cOf6t4kPhsdfbBU4aSplt8FHh58BDXl/view?usp=sharing).
 
 3. **Posizionamento dei dataset**  
    Dopo aver scaricato i dataset, posiziona la cartella chiamata `datasets_raw` nella **root** del progetto. La struttura della cartella dovrebbe essere:
