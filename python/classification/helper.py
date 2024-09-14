@@ -21,7 +21,7 @@ def optimize_svm_params(X_train, y_train, clf, dataset_name, params_path = c.PAR
     if not os.path.exists(params_path+dataset_name+'_svm_params.json'):
         #print('finding SVM params of '+dataset_name)
         param_grid = {
-        'svc__C': [0.1, 0.5, 1, 10, 50],
+        'svc__C': [0.1, 0.5, 1, 10],
         'svc__gamma': ['scale', 'auto'],
         'svc__kernel': ['linear', 'rbf', 'poly', 'sigmoid']}
         

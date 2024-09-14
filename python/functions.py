@@ -157,4 +157,71 @@ def produce_combined_dataset(dataset_paths):
     combined_df.to_csv(c.FEATURES_PATH + "COMBINED"+".csv", index=False)
     print('Combined dataset produced\n')
 
+def classify_task_base_classifier_multisource():
+    """Classify task using the base classifier on the multisource dataset"""
+    import classification.BaseClassifier as base_classifier
+    print('----------Base classification of multisource dataset----------\n')
 
+    # Load the dataset and filter out the emotions that are not in the reference file
+    df = pd.read_csv(c.FEATURES_PATH + "COMBINED" + '.csv')
+    df = df[~df['emotion'].isin([2, 7, 8, 6])]
+
+    # Load features and target
+    features = df.drop(columns=['actor', 'emotion'])
+    target = df['emotion']
+
+    classifier = base_classifier.BaseClassifier(features, target, "COMBINED")
+    print('SVM classifier')
+    classifier.svm_classifier()
+    print()
+
+    print('Decision Tree classifier')
+    classifier.decision_tree_classifier()
+    print()
+
+    print('Linear Discriminant Analysis classifier')
+    classifier.lda_classifier()
+    print()
+
+    print('Base classification of multisource dataset completed\n')
+    print()
+
+def classify_task_loso_classifier_multisource():
+    """Classify task using the LOSO (Leave One Subject Out) validation approach with multisource dataset"""
+    import classification.LosoClassifier as loso_classifier
+    print('----------LOSO classification of multisource dataset----------\n')
+
+    # Load the dataset and filter out the emotions that are not in the reference file
+    df = pd.read_csv(c.FEATURES_PATH + "COMBINED" + '.csv')
+    df = df[~df['emotion'].isin([2, 7, 8, 6])]
+
+    # Load features and target
+    features = df.drop(columns=['emotion'])
+    target = df['emotion']
+
+    #define the weights for the samples
+    n_emovo = len(df[df['actor'].str.contains('EMOVO')])
+    n_ravdess = len(df[df['actor'].str.contains('RAVDESS')])
+    total_samples = n_emovo + n_ravdess
+
+    emovo_weights = [(total_samples / 2) / n_emovo] * n_emovo
+    ravdess_weights = [(total_samples / 2) / n_ravdess] * n_ravdess
+
+    sample_weights = emovo_weights + ravdess_weights
+
+    classifier = loso_classifier.LosoClassifier(features, target, "COMBINED", sample_weights, optimization=True)
+    # classifier = loso_classifier.LosoClassifier(features, target, "COMBINED")
+    print('SVM classifier')
+    classifier.svm_classifier()
+    print()
+
+    print('Decision Tree classifier')
+    classifier.decision_tree_classifier()
+    print()
+
+    print('Linear Discriminant Analysis classifier')
+    classifier.lda_classifier()
+    print()
+
+    print('LOSO classification of multisource dataset completed\n')
+    print()
