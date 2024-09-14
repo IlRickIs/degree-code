@@ -16,11 +16,12 @@ Questo repository contiene il codice per effettuare analisi sui dataset **EMOVO*
 3. **Posizionamento dei dataset**  
    Dopo aver scaricato i dataset, posiziona la cartella chiamata `datasets_raw` nella **root** del progetto. La struttura della cartella dovrebbe essere:
    ```
-   repository-ser-analysis/
+   degree-code/
    ├── datasets_raw/
    ├── python/
-   ├── main.py
+   │   └── main.py
    └── ...
+
    ```
 
 4. **Esecuzione del codice**  
