@@ -7,7 +7,7 @@ Questo repository contiene il codice per effettuare analisi sui dataset **EMOVO*
 1. **Clone del repository**  
    Clona il repository sul tuo sistema locale utilizzando il comando:
    ```bash
-   git clone https://github.com/tuo-username/repository-ser-analysis.git
+   git clone https://github.com/IlRickIs/degree-code.git
    ```
 
 2. **Dataset**  
