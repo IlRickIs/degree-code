@@ -12,7 +12,9 @@ def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     """Write confusion matrix to file"""
     os.makedirs(c.REPORTS_CM_PATH, exist_ok=True)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=disp_labels)
+    #set a title for the confusion matrix
     disp.plot()
+    disp.ax_.set_title(dataset_name + ' ' + classifier_name + ' confusion matrix')
     plt.savefig(c.REPORTS_CM_PATH + dataset_name + '_' + classifier_name + '_confusion_matrix.png')
     plt.close()
         
