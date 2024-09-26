@@ -5,8 +5,11 @@ import os
 import costants as c
 import json
 import pandas as pd
-from sklearn.metrics import ConfusionMatrixDisplay
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from sklearn.metrics import ConfusionMatrixDisplay
 
 def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     """Write confusion matrix to file"""

@@ -23,6 +23,7 @@ REPORTS_LOSO_PATH = 'reports/loso_classifiers/'
 REPORTS_CROSS_CORPUS_PATH = 'reports/cross_corpus_classifiers/'
 SINGLE_ACTOR_REPORTS_PATH = 'reports/single_actor_reports/'
 LABELS_MAP = {1: 'neu', 2: 'calm', 3: 'happy', 4: 'sad', 5: 'ang', 6: 'fear', 7: 'disgust', 8: 'surprise'}
+EMOZIONALMENTE_REVERSE_MAP = {'neutrality' : 1, 'calmness' : 2, 'joy' : 3, 'sadness' : 4, 'anger' : 5, 'fear' : 6, 'disgust' : 7, 'surprise' : 8}
 
 #RANDOM_STATE = ran.randint(0, 1000) #use this to randomize training and testing data
 RANDOM_STATE = 42   #for reproducibility

@@ -27,7 +27,7 @@ class MetricsHandler:
         self.recalls.append(recall_score(y_true, y_pred, average='macro', zero_division=0))
         self.f1_scores.append(f1_score(y_true, y_pred, average='macro', zero_division=0))
         self.never_predicted.append(list(set(y_true) - set(y_pred)))
-        self.cumulative_cm += confusion_matrix(y_true, y_pred)
+        self.cumulative_cm += confusion_matrix(y_true, y_pred, labels=[1, 3, 4, 5])
     
     def get_metrics(self):
         """Return metrics as a dictionary"""
