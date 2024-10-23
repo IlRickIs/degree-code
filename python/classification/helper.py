@@ -12,7 +12,11 @@ def write_cool_confusion_matrix(cm, disp_labels, dataset_name, classifier_name):
     """Write confusion matrix to file"""
     os.makedirs(c.REPORTS_CM_PATH, exist_ok=True)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=disp_labels)
-    disp.plot()
+    fig, ax = plt.subplots()
+    cax = ax.imshow(cm, cmap='viridis', vmin=0, vmax=1)
+    fig.colorbar(cax)
+    disp.plot(ax=ax, cmap='viridis', colorbar=False)
+    disp.ax_.set_title(dataset_name + '_' + classifier_name + '_confusion_matrix')
     plt.savefig(c.REPORTS_CM_PATH + dataset_name + '_' + classifier_name + '_confusion_matrix.png')
     plt.close()
         
